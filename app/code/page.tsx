@@ -2,13 +2,11 @@
 
 import { useParams } from "next/navigation";
 import { useState, useRef } from "react";
-import type { RunResponse, Challenge } from "@/types";
+import {RunResponse, Challenge, LANGUAGE} from "@/types";
 import Editor from "@monaco-editor/react";
 import type { OnMount } from "@monaco-editor/react";
 import { ClipLoader } from "react-spinners";
 import type * as monaco from "monaco-editor";
-
-const LANGUAGE = "python";
 
 const MOCK_CHALLENGE: Challenge = {
   title: "Two Sum",
@@ -36,7 +34,9 @@ const MOCK_CHALLENGE: Challenge = {
   starterCode: `class Solution:
     def twoSum(self, nums, target):
         # Write your solution here
-        pass`,
+        pass
+print(1)
+`,
 };
 
 export default function CodingPanel() {
@@ -66,13 +66,25 @@ export default function CodingPanel() {
     setIsRunning(true);
     setOutput(null);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setOutput({
-      stdout: `[Mock] Executed:\n${currentCode}`,
-      stderr: null,
-      exitCode: 0,
-    });
+    try {
+      const response = await fetch("/api/sandbox", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "code": currentCode,
+        })
+      });
+      if (!response.ok) {
+        setOutput({ stderr: response.statusText, stdout: null, exitCode: 1 });
+      } else {
+        const json = await response.json();
+        setOutput(json);
+      }
+    } catch (error) {
+      console.log(error);
+    }
 
     setIsRunning(false);
   };
