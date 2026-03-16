@@ -1,0 +1,33 @@
+services:
+  piston:
+    image: ghcr.io/engineer-man/piston:latest
+    container_name: piston_service
+    restart: always
+    privileged: true
+    ports:
+      - "2000:2000"
+    networks:
+      - energyleet-network
+    volumes:
+      - piston_packages:/piston/packages
+    tmpfs:
+      - /tmp:exec
+    cpuset: "0" # limit to CPU 0
+  piston-post-setup:
+    image: curlimages/curl:latest
+    restart: no
+    depends_on:
+      piston:
+        condition: service_started
+    networks:
+      - energyleet-network
+    volumes:
+      - ./init.sh:/init.sh:ro
+    entrypoint: ["/bin/sh", "/init.sh"]
+
+networks:
+  energyleet-network:
+    driver: bridge
+
+volumes:
+  piston_packages:

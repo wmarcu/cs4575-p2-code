@@ -18,3 +18,6 @@ export interface Challenge {
   constraints: string[];
   starterCode: string;
 }
+
+export const LANGUAGE = "python";
+export const LANGUAGE_VERSION = "3.12.0";
