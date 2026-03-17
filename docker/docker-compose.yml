@@ -16,6 +16,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+      cpuset: "1-2"
   piston:
     image: ghcr.io/engineer-man/piston:latest
     container_name: piston_service
