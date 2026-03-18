@@ -10,10 +10,10 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-// ── Enums ──────────────────────────────────────────────
+// Difficulty enum
 export const difficultyEnum = pgEnum("difficulty", ["easy", "medium", "hard"]);
 
-// ── Users ──────────────────────────────────────────────
+// Users
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
@@ -22,19 +22,19 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// ── Problems ───────────────────────────────────────────
+// Problems 
 export const problems = pgTable("problems", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description").notNull(),
   difficulty: difficultyEnum("difficulty").notNull().default("easy"),
-  examples: json("examples").notNull().default([]),        // ChallengeExample[]
-  constraints: json("constraints").notNull().default([]),   // string[]
+  examples: json("examples").notNull().default([]),        
+  constraints: json("constraints").notNull().default([]),  
   starterCode: text("starter_code").notNull().default(""),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// ── Submissions (leaderboard source) ───────────────────
+// Submissions (leaderboard source) 
 export const submissions = pgTable("submissions", {
   id: serial("id").primaryKey(),
   userId: integer("user_id")
@@ -43,7 +43,7 @@ export const submissions = pgTable("submissions", {
   problemId: integer("problem_id")
     .notNull()
     .references(() => problems.id, { onDelete: "cascade" }),
-  energyConsumption: real("energy_consumption").notNull(), // joules
+  energyConsumption: real("energy_consumption").notNull(), 
   code: text("code"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
