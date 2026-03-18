@@ -19,5 +19,13 @@ export interface Challenge {
   starterCode: string;
 }
 
+export interface LeaderboardEntry {
+  rank: number;
+  userId: number;
+  userName: string;
+  energyConsumption: number;
+  submittedAt: string;
+}
+
 export const LANGUAGE = "python";
 export const LANGUAGE_VERSION = "3.12.0";
