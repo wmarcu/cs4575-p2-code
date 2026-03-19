@@ -7,17 +7,7 @@ import { PrimeReactProvider } from "primereact/api";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navigationbar from "@/components/navigationbar";
-
-interface Problem {
-  id: number;
-  title: string;
-  description: string;
-  difficulty: string;
-  examples: Array<{ input: string; output: string; explanation?: string }>;
-  constraints: string[];
-  starterCode: string;
-  createdAt: string;
-}
+import { Problem } from "@/types";
 
 export default function Home() {
   const [problems, setProblems] = useState<Problem[]>([]);

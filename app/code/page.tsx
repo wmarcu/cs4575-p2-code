@@ -8,17 +8,7 @@ import type { OnMount } from "@monaco-editor/react";
 import { ClipLoader } from "react-spinners";
 import type * as monaco from "monaco-editor";
 import Link from "next/link";
-
-interface Problem {
-  id: number;
-  title: string;
-  description: string;
-  difficulty: string;
-  examples: Array<{ input: string; output: string; explanation?: string }>;
-  constraints: string[];
-  starterCode: string;
-  createdAt: string;
-}
+import { Problem } from "@/types";
 
 export default function CodingPanel() {
   const searchParams = useSearchParams();
