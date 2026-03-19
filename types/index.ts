@@ -27,5 +27,16 @@ export interface LeaderboardEntry {
   submittedAt: string;
 }
 
+export interface Problem {
+  id: number;
+  title: string;
+  description: string;
+  difficulty: string;
+  examples: Array<{ input: string; output: string; explanation?: string }>;
+  constraints: string[];
+  starterCode: string;
+  createdAt: string;
+}
+
 export const LANGUAGE = "python";
 export const LANGUAGE_VERSION = "3.12.0";

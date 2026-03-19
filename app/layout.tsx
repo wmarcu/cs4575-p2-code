@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EnergyGolf",
+  title: "JouleDuel",
   description: "Like CodeGolf but for energy efficiency",
 };
 

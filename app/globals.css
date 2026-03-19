@@ -3,6 +3,7 @@
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
+  --secondary: #1a1a1d;
   --accent: #22c55e;
   --accent-hover: #4ade80;
 
@@ -28,6 +29,12 @@
     --text-faint: rgba(17, 17, 17, 0.45);
     --danger: #dc2626;
   }
+}
+
+@theme inline {
+  --color-secondary: var(--secondary);
+  --color-panel: var(--panel);
+  --color-panel-border: var(--panel-border);
 }
 
 html,
