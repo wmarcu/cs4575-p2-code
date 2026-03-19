@@ -1,16 +1,34 @@
 "use client";
 
 import { Card } from 'primereact/card';
+import { Button } from 'primereact/button';
 import { classNames } from "primereact/utils";
 import { PrimeReactProvider } from "primereact/api";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Navigationbar from "@/components/navigationbar";
+
+interface Problem {
+  id: number;
+  title: string;
+  description: string;
+  difficulty: string;
+  examples: Array<{ input: string; output: string; explanation?: string }>;
+  constraints: string[];
+  starterCode: string;
+  createdAt: string;
+}
 
 export default function Home() {
+  const [problems, setProblems] = useState<Problem[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const Tailwind = {
     card: {
       root: {
         className: classNames(
           'bg-white text-gray-700 shadow-md rounded-md', // Background, text color, box shadow, and border radius.
-          'dark:bg-secondary dark:text-white ' //dark
+          'dark:bg-panel dark:text-white border dark:border-panel-border' //dark
         )
       },
       body: {
@@ -34,38 +52,68 @@ export default function Home() {
     }
   }
 
+  useEffect(() => {
+    const fetchProblems = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/problems", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          console.error("Failed to fetch problems");
+        } else {
+          const json = await response.json();
+          setProblems(json);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProblems();
+  }, []);
+
+
   return (
     <main className="">
-      <div className="flex flex-col items-start justify-center space-y-4 max-w-7xl px-4 sm:px-8 mx-auto">
-        <h1 className="font-bold text-5xl mt-26">JouleDuel</h1>
+      <Navigationbar />
+      <div className="flex flex-col items-start justify-center space-y-8 max-w-7xl px-4 sm:px-8 mx-auto pb-12">
+        <div className="mt-32 space-y-4">
+          <h1 className="font-bold text-5xl">Problems</h1>
+          <p className="text-(--text-muted)">The solution which uses the least energy, wins!</p>
+        </div>
         <div className="space-y-4 w-full">
           <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
-          <Card title="Sorting numbers">
-            <p className="m-0">
-              Given an array of numbers, sort them in ascending order. For example, if the input is [5, 2, 9, 1], the output should be [1, 2, 5, 9].
-            </p>
-          </Card>
-          </PrimeReactProvider>
-          <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
-            <Card title="Sorting numbers">
-              <p className="m-0">
-                Given an array of numbers, sort them in ascending order. For example, if the input is [5, 2, 9, 1], the output should be [1, 2, 5, 9].
-              </p>
-            </Card>
-          </PrimeReactProvider>
-          <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
-            <Card title="Sorting numbers">
-              <p className="m-0">
-                Given an array of numbers, sort them in ascending order. For example, if the input is [5, 2, 9, 1], the output should be [1, 2, 5, 9].
-              </p>
-            </Card>
-          </PrimeReactProvider>
-          <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
-            <Card title="Sorting numbers">
-              <p className="m-0">
-                Given an array of numbers, sort them in ascending order. For example, if the input is [5, 2, 9, 1], the output should be [1, 2, 5, 9].
-              </p>
-            </Card>
+            {loading ? (
+              <p className="text-(--foreground)">Loading problems...</p>
+            ) : problems.length === 0 ? (
+              <p className="text-(--foreground)">No problems found.</p>
+            ) : (
+              problems.map((problem) => (
+                <Card 
+                  key={problem.id} 
+                  title={problem.title}
+                  subTitle={`Difficulty: ${problem.difficulty}`}
+                  footer={() => (
+                    <Link href={`/code?id=${problem.id}`}>
+                      <Button
+                        className="bg-(--accent) hover:bg-(--accent-hover) text-(--foreground) font-semibold py-2 px-4
+                         rounded-md transition-colors duration-200"
+                      >
+                        Solve problem
+                      </Button>
+                    </Link>
+                  )}
+                >
+                  <p className="m-0 text-(--text-muted)">{problem.description}</p>
+                </Card>
+              ))
+            )}
           </PrimeReactProvider>
         </div>
       </div>
