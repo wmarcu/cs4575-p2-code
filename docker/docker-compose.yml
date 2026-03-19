@@ -25,7 +25,7 @@ services:
     ports:
       - "2000:2000"
     networks:
-      - energyleet-network
+      - jouleduel-network
     volumes:
       - piston_packages:/piston/packages
     tmpfs:
@@ -38,13 +38,13 @@ services:
       piston:
         condition: service_started
     networks:
-      - energyleet-network
+      - jouleduel-network
     volumes:
       - ./init.sh:/init.sh:ro
     entrypoint: ["/bin/sh", "/init.sh"]
 
 networks:
-  energyleet-network:
+  jouleduel-network:
     driver: bridge
 
 volumes:
