@@ -4,6 +4,48 @@ export interface RunResponse {
   exitCode: number;
 }
 
+export interface EnergyMeasurement {
+  medianJoules: number;
+  averageJoules: number;
+  microJoulesPerIteration: number;
+  totalIterations: number;
+  avgIterationsPerRun: number;
+  deltaWatts: number;
+  baselineWatts: number;
+  durationSec: number;
+  runs: number[];
+  runsMicroJoulesPerIteration: number[];
+  warmupRuns: number;
+}
+
+export interface TestFailure {
+  testIndex: number;
+  input: string;
+  expected: string;
+  actual: string;
+}
+
+export interface ValidationResult {
+  passed: boolean;
+  totalTests: number;
+  passedTests: number;
+  failedTests: TestFailure[];
+  error?: string;
+}
+
+export interface SubmitResponse {
+  success: boolean;
+  validation: ValidationResult;
+  energy?: EnergyMeasurement;
+  submission?: { id: number; energyConsumption: number };
+  error?: string;
+}
+
+export interface TestCase {
+  args: unknown[];
+  expected: unknown;
+}
+
 export interface ChallengeExample {
   input: string;
   output: string;

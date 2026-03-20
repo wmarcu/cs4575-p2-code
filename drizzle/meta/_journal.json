@@ -8,6 +8,27 @@
       "when": 1773744163784,
       "tag": "0000_kind_senator_kelly",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1773857968888,
+      "tag": "0001_tired_cammi",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774028538611,
+      "tag": "0002_goofy_misty_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1774030507439,
+      "tag": "0003_last_power_man",
+      "breakpoints": true
     }
   ]
 }
