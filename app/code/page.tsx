@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import {RunResponse, LANGUAGE} from "@/types";
 import Editor from "@monaco-editor/react";
 import type { OnMount } from "@monaco-editor/react";
@@ -10,7 +10,7 @@ import type * as monaco from "monaco-editor";
 import Link from "next/link";
 import { Problem } from "@/types";
 
-export default function CodingPanel() {
+function CodingPanelContent() {
   const searchParams = useSearchParams();
   const id = searchParams?.get("id");
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -249,5 +249,17 @@ export default function CodingPanel() {
         </>
       )}
     </div>
+  );
+}
+
+export default function CodingPanel() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-screen bg-(--background)">
+        <ClipLoader color="#3b82f6" size={40} />
+      </div>
+    }>
+      <CodingPanelContent />
+    </Suspense>
   );
 }
