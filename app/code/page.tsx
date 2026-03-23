@@ -10,12 +10,17 @@ import type * as monaco from "monaco-editor";
 import Link from "next/link";
 import { Problem } from "@/types";
 
+// Temporary mock user ID
+const MOCK_USER_ID = 1;
+
 function CodingPanelContent() {
   const searchParams = useSearchParams();
   const id = searchParams?.get("id");
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [output, setOutput] = useState<RunResponse | null>(null);
+  const [submitResult, setSubmitResult] = useState<SubmitResponse | null>(null);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -94,6 +99,50 @@ function CodingPanelContent() {
     setIsRunning(false);
   };
 
+  const handleSubmit = async () => {
+    if (isSubmitting || isRunning || !editorRef.current || !id) return;
+    const currentCode = editorRef.current.getValue();
+
+    if (!currentCode.trim()) {
+      setSubmitResult({
+        success: false,
+        validation: { passed: false, totalTests: 0, passedTests: 0, failedTests: [] },
+        error: "No code to submit.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitResult(null);
+    setOutput(null);
+
+    try {
+      const response = await fetch("/api/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code: currentCode,
+          problemId: Number(id),
+          userId: MOCK_USER_ID,
+        }),
+      });
+
+      const json = await response.json();
+      setSubmitResult(json);
+    } catch (error) {
+      console.error("Submit error:", error);
+      setSubmitResult({
+        success: false,
+        validation: { passed: false, totalTests: 0, passedTests: 0, failedTests: [] },
+        error: "Failed to submit. Please try again.",
+      });
+    }
+
+    setIsSubmitting(false);
+  };
+
   return (
     <div className="bg-(--background) text-(--foreground) font-sans h-full p-4 flex flex-col gap-4">
       {loading ? (
@@ -126,10 +175,17 @@ function CodingPanelContent() {
               </span>
               <button
                 onClick={handleRunCode}
-                disabled={isRunning}
-                className="px-5 py-2 text-base font-semibold rounded-lg bg-(--accent) text-white hover:bg-(--accent-hover) disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                disabled={isRunning || isSubmitting}
+                className="px-5 py-2 text-base font-semibold rounded-lg bg-(--panel-muted) text-(--foreground) border border-panel-border hover:bg-(--panel-hover) disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
                 {isRunning ? "Running..." : "Run Code"}
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={isRunning || isSubmitting}
+                className="px-5 py-2 text-base font-semibold rounded-lg bg-(--accent) text-white hover:bg-(--accent-hover) disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
               </button>
             </div>
           </div>
@@ -220,13 +276,120 @@ function CodingPanelContent() {
               <div className="min-h-0 bg-panel border border-panel-border rounded-lg p-3 overflow-auto flex flex-col shadow-sm">
                 <h2 className="text-lg font-semibold mb-2 shrink-0">Output</h2>
 
-                {isRunning && (
-                  <div className="flex items-center justify-center flex-1">
+                {(isRunning || isSubmitting) && (
+                  <div className="flex items-center justify-center flex-1 flex-col gap-2">
                     <ClipLoader color="var(--accent)" size={30} />
+                    {isSubmitting && (
+                      <span className="text-sm text-(--text-muted)">
+                        Validating and measuring energy...
+                      </span>
+                    )}
                   </div>
                 )}
 
-                {!isRunning && output && (
+                {!isRunning && !isSubmitting && submitResult && (
+                  <div className="bg-(--panel-muted) rounded-lg p-3 font-mono flex-1 overflow-auto text-sm">
+                    {/* Validation Results */}
+                    <div className={`mb-3 p-2 rounded ${submitResult.validation.passed ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
+                      <span className="font-semibold">
+                        {submitResult.validation.passed ? '✓ All tests passed!' : '✗ Tests failed'}
+                      </span>
+                      <span className="ml-2 text-(--text-muted)">
+                        ({submitResult.validation.passedTests}/{submitResult.validation.totalTests} passed)
+                      </span>
+                    </div>
+
+                    {/* Failed Tests */}
+                    {submitResult.validation.failedTests.length > 0 && (
+                      <div className="mb-3 space-y-2">
+                        {submitResult.validation.failedTests.slice(0, 3).map((failure, index) => (
+                          <div key={index} className="p-2 rounded border border-red-800/50 text-xs">
+                            <div><span className="text-(--text-muted)">Test {failure.testIndex}:</span></div>
+                            <div><span className="text-(--text-muted)">Input:</span> <code>{failure.input}</code></div>
+                            <div><span className="text-(--text-muted)">Expected:</span> <code>{failure.expected}</code></div>
+                            <div><span className="text-red-400">Got:</span> <code>{failure.actual}</code></div>
+                          </div>
+                        ))}
+                        {submitResult.validation.failedTests.length > 3 && (
+                          <div className="text-(--text-muted) text-xs">
+                            ...and {submitResult.validation.failedTests.length - 3} more failed tests
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Energy Results */}
+                    {submitResult.success && submitResult.energy && (
+                      <div className="mb-3 p-3 rounded bg-blue-900/20 border border-blue-800/50">
+                        <div className="text-blue-400 font-semibold mb-2">Score</div>
+                        <div className="text-2xl text-blue-300 font-bold mb-4">
+                          {submitResult.energy.microJoulesPerIteration.toFixed(4)} <span className="text-sm font-normal text-blue-400/80">µJ / Iteration</span>
+                        </div>
+                        <div className="text-(--text-muted) text-xs mb-2">Detailed Metrics:</div>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="text-(--text-muted)">Delta Power:</span>
+                            <span className="ml-2 text-(--foreground)">
+                              {submitResult.energy.deltaWatts.toFixed(2)} W
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-(--text-muted)">Median Energy:</span>
+                            <span className="ml-2 text-(--foreground)">
+                              {submitResult.energy.medianJoules.toFixed(2)} J
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-(--text-muted)">Baseline:</span>
+                            <span className="ml-2 text-(--text-faint)">
+                              {submitResult.energy.baselineWatts.toFixed(2)} W
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-(--text-muted)">Iterations:</span>
+                            <span className="ml-2 text-(--text-faint)">
+                              {submitResult.energy.totalIterations.toLocaleString()}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-(--text-muted)">Warm-up runs:</span>
+                            <span className="ml-2 text-(--text-faint)">
+                              {submitResult.energy.warmupRuns}
+                            </span>
+                          </div>
+                          <div className="col-span-2">
+                            <span className="text-(--text-muted)">Individual runs (µJ/iter):</span>
+                            <span className="ml-2 text-(--text-faint)">
+                              [{submitResult.energy.runsMicroJoulesPerIteration.map(r => r.toFixed(2)).join(', ')}]
+                            </span>
+                          </div>
+                          <div className="col-span-2">
+                            <span className="text-(--text-muted)">Individual runs (delta J):</span>
+                            <span className="ml-2 text-(--text-faint)">
+                              [{submitResult.energy.runs.map(r => r.toFixed(2)).join(', ')}]
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Submission Success */}
+                    {submitResult.success && submitResult.submission && (
+                      <div className="p-2 rounded bg-green-900/20 border border-green-800/50 text-green-400 text-xs">
+                        Submission #{submitResult.submission.id} recorded successfully!
+                      </div>
+                    )}
+
+                    {/* Error */}
+                    {submitResult.error && (
+                      <div className="p-2 rounded bg-yellow-900/20 border border-yellow-800/50 text-yellow-400 text-xs">
+                        {submitResult.error}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {!isRunning && !isSubmitting && !submitResult && output && (
                   <div className="bg-(--panel-muted) rounded-lg p-3 whitespace-pre-wrap wrap-break-word font-mono flex-1 overflow-auto text-sm text-(--text-muted)">
                     <pre>{output.stdout}</pre>
                     {output.stderr && output.stderr.trim() !== "" && (
@@ -238,9 +401,9 @@ function CodingPanelContent() {
                   </div>
                 )}
 
-                {!isRunning && !output && (
+                {!isRunning && !isSubmitting && !output && !submitResult && (
                   <div className="bg-(--panel-muted) rounded-lg p-3 whitespace-pre-wrap wrap-break-word font-mono flex-1 overflow-auto text-sm text-(--text-faint)">
-                    Code output will appear here after running.
+                    Run your code to test, or Submit to validate and measure energy.
                   </div>
                 )}
               </div>

@@ -1,0 +1,1 @@
+ALTER TABLE "problems" ADD COLUMN "test_cases" json DEFAULT '[]'::json NOT NULL;

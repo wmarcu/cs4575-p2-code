@@ -1,0 +1,1 @@
+ALTER TABLE "problems" ADD COLUMN "function_name" varchar(255) DEFAULT 'solution' NOT NULL;

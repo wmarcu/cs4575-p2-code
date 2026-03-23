@@ -22,14 +22,16 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Problems 
+// Problems
 export const problems = pgTable("problems", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description").notNull(),
   difficulty: difficultyEnum("difficulty").notNull().default("easy"),
-  examples: json("examples").notNull().default([]),        
-  constraints: json("constraints").notNull().default([]),  
+  examples: json("examples").notNull().default([]),
+  constraints: json("constraints").notNull().default([]),
+  functionName: varchar("function_name", { length: 255 }).notNull().default("solution"),
+  testCases: json("test_cases").notNull().default([]),
   starterCode: text("starter_code").notNull().default(""),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
