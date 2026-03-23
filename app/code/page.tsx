@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useState, useRef, useEffect, Suspense } from "react";
-import {RunResponse, LANGUAGE} from "@/types";
+import {RunResponse, LANGUAGE, SubmitResponse} from "@/types";
 import Editor from "@monaco-editor/react";
 import type { OnMount } from "@monaco-editor/react";
 import { ClipLoader } from "react-spinners";
