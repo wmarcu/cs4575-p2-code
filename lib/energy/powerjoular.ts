@@ -78,43 +78,53 @@ async function startMonitoring(outputPath: string, pid?: number): Promise<ChildP
 /**
  * Stop PowerJoular monitoring gracefully with SIGTERM.
  */
-async function stopMonitoring(process: ChildProcess): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if (!process.pid) {
+async function stopMonitoring(childProc: ChildProcess): Promise<void> {
+  if (!childProc.pid) {
+    return;
+  }
+
+  const pid = childProc.pid;
+
+  // Kill using sudo and wait for completion
+  await new Promise<void>((resolve) => {
+    const killProc = spawn("sudo", ["kill", "-TERM", String(pid)], {
+      stdio: "ignore",
+    });
+
+    killProc.on("close", () => resolve());
+    killProc.on("error", () => resolve());
+
+    // Timeout in case kill hangs
+    setTimeout(() => resolve(), 2000);
+  });
+
+  // Wait for the actual process to exit
+  await new Promise<void>((resolve) => {
+    if (childProc.exitCode !== null) {
+      // Already exited
       resolve();
       return;
     }
 
     const timeout = setTimeout(() => {
-      // Force kill if graceful shutdown fails
+      // Force kill if still running
       try {
-        process.kill("SIGKILL");
+        spawn("sudo", ["kill", "-9", String(pid)], { stdio: "ignore" });
       } catch {
-        // Process may have already exited
+        // Ignore
       }
       resolve();
-    }, 5000);
+    }, 3000);
 
-    process.on("exit", () => {
+    childProc.on("exit", () => {
       clearTimeout(timeout);
       resolve();
     });
 
-    process.on("error", (err) => {
+    childProc.on("error", () => {
       clearTimeout(timeout);
-      reject(err);
+      resolve();
     });
-
-    // Send SIGTERM for graceful shutdown
-    try {
-      // Use process.kill which sends to the process group
-      spawn("sudo", ["kill", "-TERM", String(process.pid)], {
-        stdio: "ignore",
-      });
-    } catch {
-      // Try direct kill as fallback
-      process.kill("SIGTERM");
-    }
   });
 }
 
@@ -210,7 +220,12 @@ async function cleanupFiles(...paths: string[]): Promise<void> {
   for (const path of paths) {
     try {
       if (existsSync(path)) {
-        spawn("sudo", ["rm", "-f", path], { stdio: "ignore" });
+        await new Promise<void>((resolve) => {
+          const rmProc = spawn("sudo", ["rm", "-f", path], { stdio: "ignore" });
+          rmProc.on("close", () => resolve());
+          rmProc.on("error", () => resolve());
+          setTimeout(() => resolve(), 1000); // Timeout fallback
+        });
       }
     } catch {
       // Ignore cleanup errors
