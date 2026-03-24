@@ -13,7 +13,18 @@ An energy-efficient coding competition platform where users solve programming ch
 
 ### Requirements
 
-- [PowerJoular](https://github.com/joular/powerjoular.git) to be available as `/usr/bin/powerjoular`
+- [PowerJoular](https://github.com/joular/powerjoular.git) to be available as `/usr/bin/powerjoular`.
+  
+  The following is for Arch Linux.
+  ```shell
+  git clone https://github.com/joular/powerjoular
+  cd powerjoular
+  sudo pacman -S gcc-ada
+  mkdir -p obj
+  cd obj
+  gnatmake ../src/powerjoular.adb
+  sudo cp powerjoular /usr/bin
+  ```
 - pnpm (`npm install -g pnpm`)
 - Docker & Docker Compose
 
