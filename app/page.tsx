@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import NavigationBar from "@/components/navigationBar";
 import { Problem } from "@/types";
+import ClipLoader from 'react-spinners/ClipLoader';
 
 export default function Home() {
   const [problems, setProblems] = useState<Problem[]>([]);
@@ -80,7 +81,9 @@ export default function Home() {
         <div className="space-y-4 w-full">
           <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
             {loading ? (
-              <p className="text-(--foreground)">Loading problems...</p>
+             <div className="flex items-center justify-center flex-1">
+          <ClipLoader color="var(--accent)" size={40} />
+        </div>
             ) : problems.length === 0 ? (
               <p className="text-(--foreground)">No problems found.</p>
             ) : (
