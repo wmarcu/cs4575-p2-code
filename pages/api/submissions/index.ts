@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "@/db";
 import { submissions } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, asc } from "drizzle-orm";
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,7 +20,8 @@ export default async function handler(
         query = query.where(eq(submissions.problemId, Number(problemId))) as typeof query;
       }
 
-      const results = await query;
+      const results = await query
+        .orderBy(asc(submissions.problemId), asc(submissions.energyConsumption));
       return res.status(200).json(results);
     } catch (error) {
       console.error(error);
