@@ -6,7 +6,7 @@ import { classNames } from "primereact/utils";
 import { PrimeReactProvider } from "primereact/api";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Navigationbar from "@/components/navigationbar";
+import NavigationBar from "@/components/navigationBar";
 import { Problem } from "@/types";
 
 export default function Home() {
@@ -71,7 +71,7 @@ export default function Home() {
 
   return (
     <main className="">
-      <Navigationbar />
+      <NavigationBar />
       <div className="flex flex-col items-start justify-center space-y-8 max-w-7xl px-4 sm:px-8 mx-auto pb-12">
         <div className="mt-32 space-y-4">
           <h1 className="font-bold text-5xl">Problems</h1>
