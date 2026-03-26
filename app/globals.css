@@ -46,3 +46,24 @@ body {
   @apply bg-(--background) text-(--foreground) min-h-screen;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
+
+/* Keep leaderboard dropdown overlay opaque in both themes. */
+.leaderboard-dropdown-panel {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  box-sizing: border-box;
+}
+
+.leaderboard-dropdown-panel ul {
+  background-color: inherit !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .leaderboard-dropdown-panel {
+    background-color: #1a1a1d !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+  }
+}
+
