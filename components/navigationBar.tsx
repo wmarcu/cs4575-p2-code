@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NavigationBar() {
   return (
-    <div className="fixed w-full top-0 z-50 dark:bg-secondary shadow">
+    <div className="fixed w-full top-0 z-50 bg-white dark:bg-secondary shadow">
       <div className="py-2 px-8 mx-auto w-full flex items-center justify-between relative max-w-7xl">
         <div
           className="font-bold text-4xl whitespace-nowrap w-full py-2 rounded-sm text-start">
