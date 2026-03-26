@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useRef, useEffect, Suspense } from "react";
 import {RunResponse, LANGUAGE, SubmitResponse} from "@/types";
 import Editor from "@monaco-editor/react";
@@ -9,13 +9,21 @@ import { ClipLoader } from "react-spinners";
 import type * as monaco from "monaco-editor";
 import Link from "next/link";
 import { Problem } from "@/types";
-
-// Temporary mock user ID
-const MOCK_USER_ID = 1;
+import { useAuth } from "@/components/AuthContext";
 
 function CodingPanelContent() {
   const searchParams = useSearchParams();
   const id = searchParams?.get("id");
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      const redirectUrl = id ? `/code?id=${id}` : "/";
+      router.replace(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+    }
+  }, [authLoading, user, router, id]);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -125,7 +133,7 @@ function CodingPanelContent() {
         body: JSON.stringify({
           code: currentCode,
           problemId: Number(id),
-          userId: MOCK_USER_ID,
+          userId: user!.id,
         }),
       });
 
