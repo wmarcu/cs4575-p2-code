@@ -131,7 +131,7 @@ pnpm build
 pnpm start
 ```
 
-For Gemini integration, the `GEMINI_API_KEY` environment variable needs to be configured.
+For Gemini integration, the `GEMINI_API_KEY` environment variable needs to be configured. This can be done by adding it to the `.env` file.
 
 ## CPU Isolation (Optional)
 
