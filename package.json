@@ -23,7 +23,8 @@
     "primereact": "^10.9.7",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-spinners": "^0.17.0"
+    "react-spinners": "^0.17.0",
+    "@google/genai": "1.46.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

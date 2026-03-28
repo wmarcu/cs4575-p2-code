@@ -31,6 +31,8 @@ function CodingPanelContent() {
   const [submitResult, setSubmitResult] = useState<SubmitResponse | null>(null);
   const [problem, setProblem] = useState<Problem | null>(null);
   const [loading, setLoading] = useState(true);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -149,6 +151,37 @@ function CodingPanelContent() {
     }
 
     setIsSubmitting(false);
+  };
+
+  const handleAnalyze = async () => {
+    if (!editorRef.current) return;
+
+    const code = editorRef.current.getValue();
+
+    try {
+      setFeedbackLoading(true);
+      setFeedback(null);
+
+      const res = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch feedback");
+      }
+
+      const data = await res.json();
+      setFeedback(data.feedback);
+    } catch (err) {
+      console.error(err);
+      setFeedback("Something went wrong while analyzing the code.");
+    } finally {
+      setFeedbackLoading(false);
+    }
   };
 
   return (
@@ -388,9 +421,29 @@ function CodingPanelContent() {
 
                     {/* Submission Success */}
                     {submitResult.success && submitResult.submission && (
-                      <div className="p-2 rounded bg-green-900/20 border border-green-800/50 text-green-400 text-xs">
-                        Submission #{submitResult.submission.id} recorded successfully!
-                      </div>
+                      <>
+                        <div className="mb-3 p-2 rounded bg-green-900/20 border border-green-800/50 text-green-400 text-xs">
+                          Submission #{submitResult.submission.id} recorded successfully!
+                        </div>
+                        <div className="p-3 rounded bg-purple-900/20 border border-purple-500/50 text-purple-300 text-xs">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span>🧠 Get feedback with AI!</span>
+                            <button
+                              onClick={handleAnalyze}
+                              disabled={feedbackLoading}
+                              className="px-2 py-1 text-xs rounded bg-purple-600 hover:bg-purple-500 text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {feedbackLoading ? "Analyzing..." : "Analyze"}
+                            </button>
+                          </div>
+
+                          {feedback && (
+                            <div className="mt-2 p-2 rounded bg-purple-950/40 border border-purple-700 text-purple-200 whitespace-pre-wrap">
+                              {feedback}
+                            </div>
+                          )}
+                        </div>
+                      </>
                     )}
 
                     {/* Error */}

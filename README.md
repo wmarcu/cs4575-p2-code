@@ -131,6 +131,8 @@ pnpm build
 pnpm start
 ```
 
+For Gemini integration, the `GEMINI_API_KEY` environment variable needs to be configured. This can be done by adding it to the `.env` file.
+
 ## CPU Isolation (Optional)
 
 For more accurate energy measurements, isolate a CPU core by editing the kernel parameters of your bootloader, for example if using "systemd-boot" modify your kernel's boot entry, e.g `sudo nano /boot/loader/entries/2024-09-29_21-30-17_linux.conf` and add the following kernel parameters at the end of the "options" line:
