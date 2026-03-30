@@ -59,6 +59,10 @@ async function main() {
         starterCode: `def two_sum(nums, target):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(n)"
+        },
       },
       {
         title: "FizzBuzz",
@@ -79,6 +83,10 @@ async function main() {
         starterCode: `def fizz_buzz(n):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(1)"
+        },
       },
       {
         title: "Reverse String",
@@ -99,6 +107,10 @@ async function main() {
         starterCode: `def reverse_string(s):
     # Reverse the list in-place and return it
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(1)"
+        },
       },
       {
         title: "Palindrome Number",
@@ -119,6 +131,10 @@ async function main() {
         starterCode: `def is_palindrome(x):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(log(n))",
+          space: "O(1)"
+        },
       },
       {
         title: "Valid Parentheses",
@@ -142,6 +158,10 @@ async function main() {
         starterCode: `def is_valid(s):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(n)"
+        },
       },
       {
         title: "Maximum Subarray",
@@ -163,6 +183,10 @@ async function main() {
         starterCode: `def max_sub_array(nums):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(1)"
+        },
       },
       {
         title: "Merge Two Sorted Lists",
@@ -183,6 +207,10 @@ async function main() {
         starterCode: `def merge_two_lists(list1, list2):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(m + n)",
+          space: "O(m + n)"
+        },
       },
       {
         title: "Climbing Stairs",
@@ -204,6 +232,10 @@ async function main() {
         starterCode: `def climb_stairs(n):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(1)"
+        },
       },
       {
         title: "Best Time to Buy and Sell Stock",
@@ -225,6 +257,10 @@ async function main() {
         starterCode: `def max_profit(prices):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(1)"
+        },
       },
       {
         title: "Container With Most Water",
@@ -245,6 +281,10 @@ async function main() {
         starterCode: `def max_area(height):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(1)"
+        },
       },
       {
         title: "3Sum",
@@ -265,6 +305,10 @@ async function main() {
         starterCode: `def three_sum(nums):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n^2)",
+          space: "O(n^2)"
+        },
       },
       {
         title: "Longest Substring Without Repeating Characters",
@@ -286,6 +330,10 @@ async function main() {
         starterCode: `def length_of_longest_substring(s):
     # Write your solution here
     pass`,
+        complexity: {
+          time: "O(n)",
+          space: "O(n)"
+        },
       },
     ])
     .returning();

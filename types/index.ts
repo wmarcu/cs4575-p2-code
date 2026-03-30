@@ -77,6 +77,7 @@ export interface Problem {
   examples: Array<{ input: string; output: string; explanation?: string }>;
   constraints: string[];
   starterCode: string;
+  complexity: { time: string, space: string };
   createdAt: string;
 }
 

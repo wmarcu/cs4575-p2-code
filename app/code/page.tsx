@@ -167,7 +167,7 @@ function CodingPanelContent() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, problem: problem!.title, description: problem!.description, complexity: problem!.complexity }),
       });
 
       if (!res.ok) {
