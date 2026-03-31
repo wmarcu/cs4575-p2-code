@@ -125,6 +125,7 @@ function CodingPanelContent() {
     setIsSubmitting(true);
     setSubmitResult(null);
     setOutput(null);
+    setFeedback(null);
 
     try {
       const response = await fetch("/api/submit", {
