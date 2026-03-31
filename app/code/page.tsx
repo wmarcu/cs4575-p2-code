@@ -427,7 +427,7 @@ function CodingPanelContent() {
                           Submission #{submitResult.submission.id} recorded successfully!
                         </div>
                         <div className="p-3 rounded bg-purple-900/20 border border-purple-500/50 text-purple-300 text-xs">
-                          <div className="flex items-center gap-2 mb-2">
+                          <div className="flex items-center gap-2">
                             <span>🧠 Get feedback with AI!</span>
                             <button
                               onClick={handleAnalyze}
