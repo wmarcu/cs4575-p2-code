@@ -370,7 +370,7 @@ function CodingPanelContent() {
                       <div className="mb-3 p-3 rounded bg-blue-900/20 border border-blue-800/50">
                         <div className="text-blue-400 font-semibold mb-2">Score</div>
                         <div className="text-2xl text-blue-300 font-bold mb-4">
-                          {submitResult.energy.microJoulesPerIteration.toFixed(4)} <span className="text-sm font-normal text-blue-400/80">µJ / Iteration</span>
+                          {submitResult.energy.microJoulesPerIteration.toFixed(4)} <span className="text-sm font-normal text-blue-400/80">µJ / Execution</span>
                         </div>
                         <div className="text-(--text-muted) text-xs mb-2">Detailed Metrics:</div>
                         <div className="grid grid-cols-2 gap-2 text-xs">
@@ -393,7 +393,7 @@ function CodingPanelContent() {
                             </span>
                           </div>
                           <div>
-                            <span className="text-(--text-muted)">Iterations:</span>
+                            <span className="text-(--text-muted)">Executions:</span>
                             <span className="ml-2 text-(--text-faint)">
                               {submitResult.energy.totalIterations.toLocaleString()}
                             </span>
@@ -405,7 +405,7 @@ function CodingPanelContent() {
                             </span>
                           </div>
                           <div className="col-span-2">
-                            <span className="text-(--text-muted)">Individual runs (µJ/iter):</span>
+                            <span className="text-(--text-muted)">Individual runs (µJ/exec):</span>
                             <span className="ml-2 text-(--text-faint)">
                               [{submitResult.energy.runsMicroJoulesPerIteration.map(r => r.toFixed(2)).join(', ')}]
                             </span>
