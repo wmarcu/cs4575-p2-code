@@ -125,6 +125,7 @@ function CodingPanelContent() {
     setIsSubmitting(true);
     setSubmitResult(null);
     setOutput(null);
+    setFeedback(null);
 
     try {
       const response = await fetch("/api/submit", {
@@ -167,7 +168,7 @@ function CodingPanelContent() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, problem: problem!.title, description: problem!.description, complexity: problem!.complexity }),
       });
 
       if (!res.ok) {
@@ -426,7 +427,7 @@ function CodingPanelContent() {
                           Submission #{submitResult.submission.id} recorded successfully!
                         </div>
                         <div className="p-3 rounded bg-purple-900/20 border border-purple-500/50 text-purple-300 text-xs">
-                          <div className="flex items-center gap-2 mb-2">
+                          <div className="flex items-center gap-2">
                             <span>🧠 Get feedback with AI!</span>
                             <button
                               onClick={handleAnalyze}

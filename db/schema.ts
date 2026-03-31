@@ -33,6 +33,7 @@ export const problems = pgTable("problems", {
   functionName: varchar("function_name", { length: 255 }).notNull().default("solution"),
   testCases: json("test_cases").notNull().default([]),
   starterCode: text("starter_code").notNull().default(""),
+  complexity: json("complexity").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
