@@ -29,6 +29,13 @@
       "when": 1774030507439,
       "tag": "0003_last_power_man",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1775058538356,
+      "tag": "0004_harsh_black_queen",
+      "breakpoints": true
     }
   ]
 }

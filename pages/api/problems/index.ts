@@ -18,10 +18,10 @@ export default async function handler(
 
   if (req.method === "POST") {
     try {
-      const { title, description, difficulty, examples, constraints, starterCode } = req.body;
+      const { title, description, difficulty, examples, constraints, starterCode, complexity } = req.body;
 
-      if (!title || !description) {
-        return res.status(400).json({ error: "title and description are required" });
+      if (!title || !description || !complexity) {
+        return res.status(400).json({ error: "title, description, and complexity are required" });
       }
 
       const [newProblem] = await db
@@ -33,6 +33,7 @@ export default async function handler(
           examples: examples || [],
           constraints: constraints || [],
           starterCode: starterCode || "",
+          complexity,
         })
         .returning();
 
